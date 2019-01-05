@@ -16,7 +16,8 @@
 #include "sha3/sph_simd.h"
 #include "sha3/sph_echo.h"
 
-void c11_hash(const char* input, char* output)
+
+void c11_hash(const char* input, char* output, uint32_t len)
 {
     sph_blake512_context     ctx_blake;
     sph_bmw512_context       ctx_bmw;
@@ -24,15 +25,15 @@ void c11_hash(const char* input, char* output)
     sph_skein512_context     ctx_skein;
     sph_jh512_context        ctx_jh;
     sph_keccak512_context    ctx_keccak;
-    sph_luffa512_context     ctx_luffa1;
-    sph_cubehash512_context  ctx_cubehash1;
-    sph_shavite512_context   ctx_shavite1;
-    sph_simd512_context      ctx_simd1;
-    sph_echo512_context      ctx_echo1;
 
+    sph_luffa512_context		ctx_luffa1;
+    sph_cubehash512_context		ctx_cubehash1;
+    sph_shavite512_context		ctx_shavite1;
+    sph_simd512_context		ctx_simd1;
+    sph_echo512_context		ctx_echo1;
+
+    //these uint512 in the c++ source of the client are backed by an array of uint32
     uint32_t hashA[16], hashB[16];
-
-    //blake-bmw-groestl-sken-jh-meccak-luffa-cubehash-shivite-simd-echo
 
     sph_blake512_init(&ctx_blake);
     sph_blake512 (&ctx_blake, input, 80);
@@ -56,7 +57,7 @@ void c11_hash(const char* input, char* output)
 
     sph_skein512_init(&ctx_skein);
     sph_skein512 (&ctx_skein, hashA, 64);
-    sph_skein512_close(&ctx_skein, hashB);
+    sph_skein512_close (&ctx_skein, hashB);
 
     sph_luffa512_init (&ctx_luffa1);
     sph_luffa512 (&ctx_luffa1, hashB, 64);
@@ -81,3 +82,4 @@ void c11_hash(const char* input, char* output)
     memcpy(output, hashA, 32);
 
 }
+

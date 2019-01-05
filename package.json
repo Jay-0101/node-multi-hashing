@@ -1,5 +1,5 @@
 {
-  "name": "unomp-multi-hashing",
+  "name": "nomp-multi-hashing",
   "version": "1.0.0",
   "main": "multihashing",
   "author": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/UNOMP/node-multi-hashing.git"
+    "url": "https://github.com/wareck/node-multi-hashing.git"
   },
   "dependencies": {
     "bindings": "*"
