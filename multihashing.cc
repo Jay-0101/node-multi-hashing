@@ -141,7 +141,7 @@ using namespace v8;
  DECLARE_CALLBACK(x11, x11_hash, 32);
  DECLARE_CALLBACK(x13, x13_hash, 32);
  DECLARE_CALLBACK(x15, x15_hash, 32);
- DECLARE_CALLBACK(lyra2re2, lyra2re2, 32);
+ DECLARE_CALLBACK(lyra2re2, lyra2re2_hash, 32);
 
 DECLARE_FUNC(scrypt) {
    DECLARE_SCOPE;
@@ -298,7 +298,7 @@ DECLARE_FUNC(lyra2re2) {
     lyra2re2_hash(input, output);
 
      SET_BUFFER_RETURN(output, 32);
-    );
+}
 
 DECLARE_FUNC(cryptonightfast) {
     DECLARE_SCOPE;
