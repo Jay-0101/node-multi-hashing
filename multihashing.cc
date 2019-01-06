@@ -141,7 +141,7 @@ using namespace v8;
  DECLARE_CALLBACK(x11, x11_hash, 32);
  DECLARE_CALLBACK(x13, x13_hash, 32);
  DECLARE_CALLBACK(x15, x15_hash, 32);
-
+ DECLARE_CALLBACK(lyra2re2, lyra2re2, 32);
 
 DECLARE_FUNC(scrypt) {
    DECLARE_SCOPE;
@@ -285,19 +285,19 @@ DECLARE_FUNC(lyra2re2) {
     DECLARE_SCOPE;
 
     if (args.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+       RETURN_EXCEPT("You must provide one argument.");
 
     Local<Object> target = args[0]->ToObject();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        RETURN_EXCEPT("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char output[32];
 
     lyra2re2_hash(input, output);
 
-     SET_BUFFER_RETURN (output, 32);
+     SET_BUFFER_RETURN(output, 32);
     );
 
 DECLARE_FUNC(cryptonightfast) {
