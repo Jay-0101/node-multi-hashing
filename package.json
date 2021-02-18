@@ -1,5 +1,5 @@
 {
-    "name": "multi-hashing",
+    "name": "node-multi-hashing",
     "version": "1.0.0",
     "main": "multihashing",
     "author": {
@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/zone117x/node-multi-hashing.git"
+        "url": "https://github.com/Jay-0101/node-multi-hashing-1.git"
     },
     "scripts": {
         "build": "node-gyp rebuild",
