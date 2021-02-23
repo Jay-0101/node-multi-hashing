@@ -6,8 +6,7 @@
 
 extern "C" {
     #include "blake.h"
-    #include "cryptonight.h"
-    #include "cryptonight_fast.h"
+
     #include "groestl.h"
     #include "keccak.h"
     #include "quark.h"
@@ -169,93 +168,10 @@ DECLARE_FUNC(scryptjane) {
     SET_BUFFER_RETURN(output, 32);
 }
 
-DECLARE_FUNC(cryptonight) {
-    bool fast = false;
-    uint32_t cn_variant = 0;
-    uint64_t height = 0;
-
-    if (info.Length() < 1)
-        RETURN_EXCEPT("You must provide one argument.");
-
-    if (info.Length() >= 2) {
-        if(info[1]->IsBoolean())
-            fast = Nan::To<bool>(info[1]).ToChecked();
-        else if(info[1]->IsUint32())
-            cn_variant = Nan::To<uint32_t>(info[1]).ToChecked();
-        else
-            RETURN_EXCEPT("Argument 2 should be a boolean or uint32_t");
-    }
-
-    if ((cn_variant == 4) && (info.Length() < 3)) {
-        RETURN_EXCEPT("You must provide Argument 3 (block height) for Cryptonight variant 4");
-    }
-
-    if (info.Length() >= 3) {
-        if(info[2]->IsUint32())
-            height = Nan::To<uint32_t>(info[2]).ToChecked();
-        else
-            RETURN_EXCEPT("Argument 3 should be uint32_t");
-    }
-
-    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
-
-    if(!Buffer::HasInstance(target))
-        RETURN_EXCEPT("Argument should be a buffer object.");
-
-    char * input = Buffer::Data(target);
-    char output[32];
-
-    uint32_t input_len = Buffer::Length(target);
-
-    if(fast)
-        cryptonight_fast_hash(input, output, input_len);
-    else {
-        if ((cn_variant == 1) && input_len < 43)
-            RETURN_EXCEPT("Argument must be 43 bytes for monero variant 1");
-        cryptonight_hash(input, output, input_len, cn_variant, height);
-    }
-    SET_BUFFER_RETURN(output, 32);
-}
-DECLARE_FUNC(cryptonightfast) {
-    bool fast = false;
-    uint32_t cn_variant = 0;
-
-    if (info.Length() < 1)
-        RETURN_EXCEPT("You must provide one argument.");
-
-    if (info.Length() >= 2) {
-        if(info[1]->IsBoolean())
-            fast = Nan::To<bool>(info[1]).ToChecked();
-        else if(info[1]->IsUint32())
-            cn_variant = Nan::To<uint32_t>(info[1]).ToChecked();
-        else
-            RETURN_EXCEPT("Argument 2 should be a boolean or uint32_t");
-    }
-
-    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
-
-    if(!Buffer::HasInstance(target))
-        RETURN_EXCEPT("Argument should be a buffer object.");
-
-    char * input = Buffer::Data(target);
-    char output[32];
-
-    uint32_t input_len = Buffer::Length(target);
-
-    if(fast)
-        cryptonightfast_fast_hash(input, output, input_len);
-    else {
-        if (cn_variant > 0 && input_len < 43)
-            RETURN_EXCEPT("Argument must be 43 bytes for monero variant 1+");
-        cryptonightfast_hash(input, output, input_len, cn_variant);
-    }
-    SET_BUFFER_RETURN(output, 32);
-}
 
 NAN_MODULE_INIT(init) {
     NAN_EXPORT(target, blake);
-    NAN_EXPORT(target, cryptonight);
-    NAN_EXPORT(target, cryptonightfast);
+
     NAN_EXPORT(target, groestl);
     NAN_EXPORT(target, groestlmyriad);
     NAN_EXPORT(target, keccak);
