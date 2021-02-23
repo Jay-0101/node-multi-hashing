@@ -5,7 +5,6 @@
             "sources": [
                 "src/multihashing.cc",
                 "src/blake.c",
-                "src/boolberry.cc",
                 "src/cryptonight.c",
 				"src/cryptonight_fast.c",
                 "src/groestl.c",
