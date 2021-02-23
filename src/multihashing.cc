@@ -5,21 +5,11 @@
 #include <nan.h>
 
 extern "C" {
-    #include "bcrypt.h"
     #include "blake.h"
-    #include "c11.h"
     #include "cryptonight.h"
     #include "cryptonight_fast.h"
-    #include "fresh.h"
-    #include "fugue.h"
     #include "groestl.h"
-    #include "hefty1.h"
     #include "keccak.h"
-    #include "lbry.h"
-    #include "lyra2.h"
-    #include "lyra2re.h"
-    #include "lyra2z.h"
-    #include "nist5.h"
     #include "quark.h"
     #include "qubit.h"
     #include "scryptjane.h"
@@ -35,8 +25,6 @@ extern "C" {
     #include "x16r.h"
     #include "x16rv2.h"
     #include "neoscrypt.h"
-    #include "crypto/argon2/argon2.h"
-    #include "crypto/yescrypt/yescrypt.h"
 }
 
 #include "boolberry.h"
@@ -78,103 +66,20 @@ using namespace v8;
     SET_BUFFER_RETURN(output, output_len); \
 }
 
- DECLARE_CALLBACK(bcrypt, bcrypt_hash, 32);
  DECLARE_CALLBACK(blake, blake_hash, 32);
- DECLARE_CALLBACK(c11, c11_hash, 32);
- DECLARE_CALLBACK(fresh, fresh_hash, 32);
- DECLARE_CALLBACK(fugue, fugue_hash, 32);
  DECLARE_CALLBACK(groestl, groestl_hash, 32);
  DECLARE_CALLBACK(groestlmyriad, groestlmyriad_hash, 32);
- DECLARE_CALLBACK(hefty1, hefty1_hash, 32);
  DECLARE_CALLBACK(keccak, keccak_hash, 32);
- DECLARE_CALLBACK(lbry, lbry_hash, 32);
- DECLARE_CALLBACK(lyra2re, lyra2re_hash, 32);
- DECLARE_CALLBACK(lyra2rev2, lyra2rev2_hash, 32);
- DECLARE_CALLBACK(lyra2rev3, lyra2rev3_hash, 32);
- DECLARE_CALLBACK(lyra2z, lyra2z_hash, 32);
- DECLARE_CALLBACK(nist5, nist5_hash, 32);
  DECLARE_CALLBACK(quark, quark_hash, 32);
  DECLARE_CALLBACK(qubit, qubit_hash, 32);
  DECLARE_CALLBACK(sha1, sha1_hash, 32);
  DECLARE_CALLBACK(sha256d, sha256d_hash, 32);
- DECLARE_CALLBACK(shavite3, shavite3_hash, 32);
  DECLARE_CALLBACK(skein, skein_hash, 32);
  DECLARE_CALLBACK(x11, x11_hash, 32);
  DECLARE_CALLBACK(x13, x13_hash, 32);
  DECLARE_CALLBACK(x15, x15_hash, 32);
  DECLARE_CALLBACK(x16r, x16r_hash, 32);
  DECLARE_CALLBACK(x16rv2, x16rv2_hash, 32);
- DECLARE_CALLBACK(yescrypt, yescrypt_hash, 32);
-
-DECLARE_FUNC(argon2d) {
-    if (info.Length() < 4)
-        RETURN_EXCEPT("You must provide buffer to hash, T value, M value, and P value");
-
-    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
-
-    if(!Buffer::HasInstance(target))
-        RETURN_EXCEPT("Argument should be a buffer object.");
-
-    unsigned int tValue = Nan::To<uint32_t>(info[1]).ToChecked();
-    unsigned int mValue = Nan::To<uint32_t>(info[2]).ToChecked();
-    unsigned int pValue = Nan::To<uint32_t>(info[3]).ToChecked();
-
-    char * input = Buffer::Data(target);
-    char output[32];
-
-    uint32_t input_len = Buffer::Length(target);
-
-    argon2d_hash_raw(tValue, mValue, pValue, input, input_len, input, input_len, output, 32);
-
-    SET_BUFFER_RETURN(output, 32);
-}
-
-DECLARE_FUNC(argon2i) {
-    if (info.Length() < 4)
-        RETURN_EXCEPT("You must provide buffer to hash, T value, M value, and P value");
-
-    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
-
-    if(!Buffer::HasInstance(target))
-        RETURN_EXCEPT("Argument should be a buffer object.");
-
-    unsigned int tValue = Nan::To<uint32_t>(info[1]).ToChecked();
-    unsigned int mValue = Nan::To<uint32_t>(info[2]).ToChecked();
-    unsigned int pValue = Nan::To<uint32_t>(info[3]).ToChecked();
-
-    char * input = Buffer::Data(target);
-    char output[32];
-
-    uint32_t input_len = Buffer::Length(target);
-
-    argon2i_hash_raw(tValue, mValue, pValue, input, input_len, input, input_len, output, 32);
-
-    SET_BUFFER_RETURN(output, 32);
-}
-
-DECLARE_FUNC(argon2id) {
-
-    if (info.Length() < 4)
-        RETURN_EXCEPT("You must provide buffer to hash, T value, M value, and P value");
-
-    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
-
-    if(!Buffer::HasInstance(target))
-        RETURN_EXCEPT("Argument should be a buffer object.");
-
-    unsigned int tValue = Nan::To<uint32_t>(info[1]).ToChecked();
-    unsigned int mValue = Nan::To<uint32_t>(info[2]).ToChecked();
-    unsigned int pValue = Nan::To<uint32_t>(info[3]).ToChecked();
-
-    char * input = Buffer::Data(target);
-    char output[32];
-
-    uint32_t input_len = Buffer::Length(target);
-
-    argon2id_hash_raw(tValue, mValue, pValue, input, input_len, input, input_len, output, 32);
-
-    SET_BUFFER_RETURN(output, 32);
-}
 
 DECLARE_FUNC(scrypt) {
    if (info.Length() < 3)
@@ -385,27 +290,13 @@ DECLARE_FUNC(boolberry) {
 }
 
 NAN_MODULE_INIT(init) {
-    NAN_EXPORT(target, argon2d);
-    NAN_EXPORT(target, argon2i);
-    NAN_EXPORT(target, argon2id);
-    NAN_EXPORT(target, bcrypt);
     NAN_EXPORT(target, blake);
     NAN_EXPORT(target, boolberry);
-    NAN_EXPORT(target, c11);
     NAN_EXPORT(target, cryptonight);
     NAN_EXPORT(target, cryptonightfast);
-    NAN_EXPORT(target, fresh);
-    NAN_EXPORT(target, fugue);
     NAN_EXPORT(target, groestl);
     NAN_EXPORT(target, groestlmyriad);
-    NAN_EXPORT(target, hefty1);
     NAN_EXPORT(target, keccak);
-    NAN_EXPORT(target, lbry);
-    NAN_EXPORT(target, lyra2re);
-    NAN_EXPORT(target, lyra2rev2);
-    NAN_EXPORT(target, lyra2rev3);
-    NAN_EXPORT(target, lyra2z);
-    NAN_EXPORT(target, nist5);
     NAN_EXPORT(target, quark);
     NAN_EXPORT(target, qubit);
     NAN_EXPORT(target, scrypt);
@@ -413,7 +304,6 @@ NAN_MODULE_INIT(init) {
     NAN_EXPORT(target, scryptn);
     NAN_EXPORT(target, sha1);
     NAN_EXPORT(target, sha256d);
-    NAN_EXPORT(target, shavite3);
     NAN_EXPORT(target, skein);
     NAN_EXPORT(target, x11);
     NAN_EXPORT(target, x13);
@@ -421,7 +311,6 @@ NAN_MODULE_INIT(init) {
     NAN_EXPORT(target, x16r);
     NAN_EXPORT(target, x16rv2);
     NAN_EXPORT(target, neoscrypt);
-    NAN_EXPORT(target, yescrypt);
 }
 
 NODE_MODULE(multihashing, init)
