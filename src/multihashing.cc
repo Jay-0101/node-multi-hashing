@@ -23,9 +23,6 @@ extern "C" {
     #include "x16r.h"
     #include "x16rv2.h"
     #include "neoscrypt.h"
-}
-
-#include "boolberry.h"
 
 using namespace node;
 using namespace Nan;
