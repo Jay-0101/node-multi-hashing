@@ -16,9 +16,7 @@ extern "C" {
     #include "scryptn.h"
     #include "sha1.h"
     #include "sha256d.h"
-    #include "shavite3.h"
     #include "skein.h"
-    #include "sponge.h"
     #include "x11.h"
     #include "x13.h"
     #include "x15.h"
@@ -256,42 +254,9 @@ DECLARE_FUNC(cryptonightfast) {
     }
     SET_BUFFER_RETURN(output, 32);
 }
-DECLARE_FUNC(boolberry) {
-    if (info.Length() < 2)
-        RETURN_EXCEPT("You must provide two arguments.");
-
-    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
-    Local<Object> target_spad = Nan::To<Object>(info[1]).ToLocalChecked();
-    uint32_t height = 1;
-
-    if(!Buffer::HasInstance(target))
-        RETURN_EXCEPT("Argument 1 should be a buffer object.");
-
-    if(!Buffer::HasInstance(target_spad))
-        RETURN_EXCEPT("Argument 2 should be a buffer object.");
-
-    if(info.Length() >= 3) {
-        if(info[2]->IsUint32())
-            height = Nan::To<uint32_t>(info[2]).ToChecked();
-        else
-            RETURN_EXCEPT("Argument 3 should be an unsigned integer.");
-    }
-
-    char * input = Buffer::Data(target);
-    char * scratchpad = Buffer::Data(target_spad);
-    char output[32];
-
-    uint32_t input_len = Buffer::Length(target);
-    uint64_t spad_len = Buffer::Length(target_spad);
-
-    boolberry_hash(input, input_len, scratchpad, spad_len, output, height);
-
-    SET_BUFFER_RETURN(output, 32);
-}
 
 NAN_MODULE_INIT(init) {
     NAN_EXPORT(target, blake);
-    NAN_EXPORT(target, boolberry);
     NAN_EXPORT(target, cryptonight);
     NAN_EXPORT(target, cryptonightfast);
     NAN_EXPORT(target, groestl);
